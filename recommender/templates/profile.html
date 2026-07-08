@@ -1,0 +1,84 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Profile" %}{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card panel-card shadow-sm border-0 text-center py-4">
+            <div class="card-body">
+                {% if profile.profile_image %}
+                <img src="{{ profile.profile_image.url }}" alt="Profile" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center mb-3" style="width: 120px; height: 120px;">
+                    <i class="fa-solid fa-user fa-2x"></i>
+                </div>
+                {% endif %}
+                <h4 class="mb-1">{{ request.user.get_full_name|default:request.user.username }}</h4>
+                <p class="text-muted mb-3">{% tr "Manage your account and farm preferences." %}</p>
+                <div class="text-start small text-muted">
+                    <p class="mb-1"><strong>{% tr "Email" %}:</strong> {{ request.user.email }}</p>
+                    <p class="mb-1"><strong>{% tr "Username" %}:</strong> {{ request.user.username }}</p>
+                    <p class="mb-0"><strong>{% tr "Language" %}:</strong> {% if profile.preferred_language == 'ne' %}{% tr "नेपाली" %}{% else %}{% tr "English" %}{% endif %}</p>
+                </div>
+                <div class="mt-4">
+                    <a href="{% url 'user_history' %}" class="btn btn-outline-success btn-sm"><i class="fa-solid fa-clock-rotate-left me-1"></i> {% tr "Prediction History" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="mb-1"><i class="fa-solid fa-user-pen"></i> {% tr "Edit Profile" %}</h3>
+                        <p class="text-muted mb-0">{% tr "Update your personal details, preferences, and profile image." %}</p>
+                    </div>
+                    <span class="badge bg-success">{% tr "Verified" %}</span>
+                </div>
+                <form method="post" id="profileForm" enctype="multipart/form-data" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Full Name" %}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-regular fa-user"></i></span>
+                            <input type="text" name="name" class="form-control" value="{{ full_name }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Phone" %}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
+                            <input type="text" name="phone" class="form-control" value="{{ profile.phone }}">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% tr "Bio" %}</label>
+                        <textarea name="bio" class="form-control" rows="4">{{ profile.bio }}</textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Preferred Language" %}</label>
+                        <select name="language" class="form-select">
+                            <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
+                            <option value="ne" {% if profile.preferred_language == 'ne' %}selected{% endif %}>नेपाली</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Username" %}</label>
+                        <input type="text" class="form-control" value="{{ request.user.username }}" disabled>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% tr "Profile Photo" %}</label>
+                        <input type="file" name="profile_image" class="form-control" accept="image/*">
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-success w-100" type="submit">
+                            <i class="fa-solid fa-save me-2"></i> {% tr "Save Changes" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

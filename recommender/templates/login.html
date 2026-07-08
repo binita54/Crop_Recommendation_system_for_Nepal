@@ -1,0 +1,67 @@
+﻿{% extends "base.html" %}
+{% load static translation_tags %}
+{% block title %}{% tr "Login" %}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <div class="auth-card shadow-lg border-0 overflow-hidden">
+            <div class="row g-0">
+                <div class="col-md-6 auth-aside d-none d-md-flex align-items-end">
+                    <div class="aside-content p-4 p-xl-5">
+                        <h4 class="fw-bold mb-3">{% tr "Welcome back" %}</h4>
+                        <p class="mb-4">{% tr "Sign in to access your farm dashboard, unlock smart crop recommendations, and view your prediction history." %}</p>
+                        <ul class="small list-unstyled mb-0">
+                            <li class="mb-3"><i class="fa-solid fa-circle-check me-2"></i> {% tr "Secure and private" %}</li>
+                            <li class="mb-3"><i class="fa-solid fa-circle-check me-2"></i> {% tr "Fast ML predictions" %}</li>
+                            <li class="mb-3"><i class="fa-solid fa-circle-check me-2"></i> {% tr "Easy, responsive dashboard" %}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 bg-white">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <h3 class="mb-1"><i class="fa-solid fa-right-to-bracket"></i> {% tr "Login" %}</h3>
+                            <p class="text-muted mb-0">{% tr "Enter your email and password to continue." %}</p>
+                        </div>
+                        <form method="post" id="loginForm" class="row g-3">
+                            {% csrf_token %}
+                            <div class="col-12">
+                                <label class="form-label">{% tr "Email" %}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+                                    <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">{% tr "Password" %}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-key"></i></span>
+                                    <input type="password" name="password" id="pwd1" class="form-control" placeholder="••••••••" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePwd" title="Show/Hide"><i class="fa-regular fa-eye"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-success w-100" type="submit">{% tr "Login" %}</button>
+                            </div>
+                            <div class="col-12 text-center">
+                                <span class="text-muted small">{% tr "New here?" %}</span>
+                                <a href="{% url 'signup' %}" class="small text-decoration-none ms-1"><i class="fa-solid fa-user-plus"></i> {% tr "Create Account" %}</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.getElementById('togglePwd')?.addEventListener('click', function() {
+    const pwd = document.getElementById('pwd1');
+    const icon = this.querySelector('i');
+    const visible = pwd.type === 'password';
+    pwd.type = visible ? 'text' : 'password';
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
+});
+</script>
+{% endblock %}

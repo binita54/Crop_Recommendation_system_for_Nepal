@@ -1,0 +1,26 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Crop Calendar" %}{% endblock %}
+{% block content %}
+<div class="card panel-card shadow-sm border-0">
+    <div class="card-body">
+        <h3 class="mb-3"><i class="fa-solid fa-calendar-days"></i> {% tr "Seasonal Crop Calendar" %}</h3>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% tr "Season" %}</th>
+                        <th>{% tr "Suggested Crops" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>{% tr "Spring" %}</td><td>{% tr "Maize, Wheat, Lentil" %}</td></tr>
+                    <tr><td>{% tr "Summer" %}</td><td>{% tr "Rice, Mango, Watermelon" %}</td></tr>
+                    <tr><td>{% tr "Monsoon" %}</td><td>{% tr "Rice, Jute, Pigeon Pea" %}</td></tr>
+                    <tr><td>{% tr "Winter" %}</td><td>{% tr "Chickpea, Lentil, Apple" %}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

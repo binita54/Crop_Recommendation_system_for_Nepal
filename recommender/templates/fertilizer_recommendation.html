@@ -1,0 +1,50 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Fertilizer Recommendation" %}{% endblock %}
+{% block content %}
+<div class="card panel-card shadow-sm border-0">
+    <div class="card-body">
+        <h3 class="mb-3"><i class="fa-solid fa-seedling"></i> {% tr "Fertilizer Recommendation" %}</h3>
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            <div class="col-md-4">
+                <label class="form-label">{% tr "Soil Nitrogen (N)" %}</label>
+                <input type="number" step="any" name="nitrogen" class="form-control" placeholder="e.g. 50" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">{% tr "Soil Phosphorus (P)" %}</label>
+                <input type="number" step="any" name="phosphorus" class="form-control" placeholder="e.g. 30" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">{% tr "Soil Potassium (K)" %}</label>
+                <input type="number" step="any" name="potassium" class="form-control" placeholder="e.g. 200" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">{% tr "Crop Type" %}</label>
+                <select name="crop_type" class="form-select" required>
+                    <option value="">{% tr "Select crop" %}</option>
+                    {% for crop in crops %}
+                    <option value="{{ crop }}">{{ crop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success">{% tr "Get Recommendation" %}</button>
+            </div>
+        </form>
+        {% if recommendation %}
+        <hr>
+        <div class="card border-success bg-surface mt-3">
+            <div class="card-body">
+                <h5 class="mb-3">{% tr "Recommendation for" %} {{ recommendation.crop }}</h5>
+                <ul class="mb-0">
+                    <li><strong>{% tr "Nitrogen" %}:</strong> {{ recommendation.nitrogen }}</li>
+                    <li><strong>{% tr "Phosphorus" %}:</strong> {{ recommendation.phosphorus }}</li>
+                    <li><strong>{% tr "Potassium" %}:</strong> {{ recommendation.potassium }}</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

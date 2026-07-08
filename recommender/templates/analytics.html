@@ -1,0 +1,79 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Analytics" %}{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <h4 class="mb-3"><i class="fa-solid fa-chart-line"></i> {% tr "Analytics Overview" %}</h4>
+                <div class="list-group">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{% tr "Total users" %}</span>
+                        <strong>{{ total_users }}</strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{% tr "Predictions" %}</span>
+                        <strong>{{ total_predictions }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fa-solid fa-seedling"></i> {% tr "Most Recommended Crops" %}</h5>
+                <div class="list-group">
+                    {% for crop in top_crops %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ crop.predicted_label|title }}</span>
+                        <strong>{{ crop.count }}</strong>
+                    </div>
+                    {% empty %}
+                    <div class="list-group-item text-muted">{% tr "No data yet." %}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fa-solid fa-chart-column"></i> {% tr "Predictions by Month" %}</h5>
+                <div class="chart-container">
+                    <canvas id="adminChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('adminChart')?.getContext('2d');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ monthly_labels|safe }},
+            datasets: [{
+                label: '{% tr "Predictions" %}',
+                data: {{ monthly_counts|safe }},
+                backgroundColor: 'rgba(25, 135, 84, 0.2)',
+                borderColor: 'rgba(25, 135, 84, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: 'rgba(25, 135, 84, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Crop Disease Detection" %}{% endblock %}
+{% block content %}
+<div class="card panel-card shadow-sm border-0">
+    <div class="card-body">
+        <h3 class="mb-3"><i class="fa-solid fa-leaf"></i> {% tr "Crop Disease Detection" %}</h3>
+        <form method="post" enctype="multipart/form-data" class="mb-4">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">{% tr "Upload Crop Leaf Image" %}</label>
+                <input type="file" name="image" accept="image/*" class="form-control" required>
+                <div class="form-text">{% tr "Upload a clear image of a crop leaf for disease detection." %}</div>
+            </div>
+            <button type="submit" class="btn btn-success">{% tr "Detect Disease" %}</button>
+        </form>
+        {% if result %}
+        <div class="card border-success bg-surface">
+            <div class="card-body text-center">
+                <h5 class="card-title">{% tr "Detection Result" %}</h5>
+                <p class="display-6 text-success">{{ result.label }}</p>
+                <p class="text-muted">{% tr "Confidence" %}: {{ result.confidence|floatformat:2 }}%</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

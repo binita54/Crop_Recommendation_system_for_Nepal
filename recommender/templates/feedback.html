@@ -1,0 +1,52 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Feedback" %}{% endblock %}
+{% block content %}
+<div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="mb-4">
+                    <h3 class="mb-1"><i class="fa-solid fa-comments"></i> {% tr "Feedback" %}</h3>
+                    <p class="text-muted mb-0">{% tr "Help us improve your farm planning experience with a quick note." %}</p>
+                </div>
+                <form method="post" class="row g-3">
+                    {% csrf_token %}
+                    <div class="col-12">
+                        <label class="form-label">{% tr "Full Name" %}</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Email" %}</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">{% tr "Subject" %}</label>
+                        <input type="text" name="subject" class="form-control" placeholder="{% tr "Optional" %}">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">{% tr "Message" %}</label>
+                        <textarea name="message" class="form-control" rows="5" required></textarea>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button class="btn btn-success" type="submit"><i class="fa-solid fa-paper-plane me-2"></i> {% tr "Send Feedback" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card panel-card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fa-solid fa-lightbulb"></i> {% tr "What we value" %}</h5>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">{% tr "Clearer recommendations for your crops." %}</li>
+                    <li class="mb-2">{% tr "Better fertilizer and disease guidance." %}</li>
+                    <li class="mb-2">{% tr "Faster performance and easier navigation." %}</li>
+                    <li>{% tr "More useful insights from your farming data." %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

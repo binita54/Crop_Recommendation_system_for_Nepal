@@ -1,0 +1,118 @@
+﻿{% extends "base.html" %}
+{% load static %}
+{% load translation_tags %}
+{% load dict_extras %}
+{% block title %}{% tr "Predict" %}{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+                    <div>
+                        <h3 class="mb-1"><i class="fa-solid fa-flask"></i> {% tr "Crop Recommendation" %}</h3>
+                        <p class="text-muted mb-0">{% tr "Enter your field values and get a crop recommendation powered by our trained model." %}</p>
+                    </div>
+                    <div class="small text-muted d-none d-md-flex align-items-center gap-2">
+                        <i class="fa-solid fa-circle-info"></i>
+                        {% tr "Enter numeric values" %} ({% tr "HUMIDITY" %} 0-100, {% tr "PH" %} 0-14)
+                    </div>
+                </div>
+                <form method="post" id="predictForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">{% tr "City (optional for live weather)" %}</label>
+                            <input type="text" name="city" class="form-control" placeholder="e.g. Kathmandu">
+                        </div>
+                         {% for c in feature_order %}
+                        <div class="col-md-4">
+                        <label class="form-label text-uppercase">{% tr c %}</label>
+                        {% if c == "humidity" %}
+                        <input type="number" step="any" min="0" max="100" name="{{ c }}" value="{{ last_data|get_item:c }}" required class="form-control" placeholder="e.g. 80">
+                        {% elif c == "ph" %}
+                        <input type="number" step="any" min="0" max="15" name="{{ c }}" value="{{ last_data|get_item:c }}" required class="form-control" placeholder="e.g. 7.5">
+                        {% else %}
+                        <input type="number" step="any" min="0" name="{{ c }}" value="{{ last_data|get_item:c }}" required class="form-control" placeholder="e.g. 90">
+                        {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-success"><i class="fa-solid fa-wand-magic-sparkles me-2"></i> {% tr "Predict" %}</button>
+                        <button type="button" class="btn btn-outline-secondary" id="btnSample"><i class="fa-solid fa-bolt me-2"></i> {% tr "Use Sample" %}</button>
+                        <button type="reset" class="btn btn-outline-danger"><i class="fa-solid fa-rotate-left me-2"></i> {% tr "Reset" %}</button>
+                    </div>
+                </form>
+                {% if result %}
+                <hr class="my-4">
+                <div class="alert alert-success rounded-4">
+                    <strong>{% tr "Recommended Crop" %}:</strong> {{ result|title }}
+                </div>
+                <div class="card border-success-subtle bg-surface mb-3">
+                    <div class="card-body">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3">
+                            <div>
+                                <h5 class="card-title text-success mb-1"><i class="fa-solid fa-seedling"></i> {{ crop_info.name }}</h5>
+                                <p class="text-muted mb-0">{{ crop_info.description }}</p>
+                            </div>
+                            <span class="badge bg-success">{% tr "Confidence" %} {{ confidence }}%</span>
+                        </div>
+                        <div class="row g-3 small text-muted">
+                            <div class="col-md-4"><strong>{% tr "Climate" %}:</strong> {{ crop_info.climate }}</div>
+                            <div class="col-md-4"><strong>{% tr "Season" %}:</strong> {{ crop_info.season }}</div>
+                            <div class="col-md-4"><strong>{% tr "Tip" %}:</strong> {{ crop_info.tip }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h6 class="mb-3"><i class="fa-solid fa-ranking-star"></i> {% tr "Top Crop Suggestions" %}</h6>
+                        <div class="list-group">
+                            {% for candidate in top_candidates %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">{{ candidate.name }}</div>
+                                    <div class="small text-muted">{{ candidate.reason }}</div>
+                                </div>
+                                <span class="badge bg-success">{{ candidate.confidence }}%</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fa-solid fa-lightbulb"></i> {% tr "Tips" %}</h5>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">{% tr "Use realistic local values for temperature, humidity, and rainfall." %}</li>
+                    <li class="mb-2">{% tr "Soil pH is 0-14; most crops prefer 6-7." %}</li>
+                    <li>{% tr "Save multiple predictions and compare them in your History." %}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card panel-card shadow-sm border-0 mt-3">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="fa-solid fa-circle-question"></i> {% tr "What is N-P-K?" %}</h5>
+                <p class="small text-muted mb-0">{% tr "N (Nitrogen), P (Phosphorus), and K (Potassium) are the key nutrients affecting crop growth. Balance them carefully for strong yields." %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+(function() {
+    const sample = { N: 90, P: 40, K: 40, temperature: 20, humidity: 80, ph: 7, rainfall: 200 };
+    document.getElementById('btnSample')?.addEventListener('click', () => {
+        document.querySelectorAll('#predictForm input[name]').forEach(inp => {
+            if (sample[inp.name] !== undefined) inp.value = sample[inp.name];
+        });
+        Swal.fire({ icon: 'info', title: '{% tr "Sample values loaded" %}' });
+    });
+})();
+</script>
+{% endblock %}

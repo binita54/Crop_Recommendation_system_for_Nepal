@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "AI Chatbot" %}{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0"><i class="fa-solid fa-robot"></i> {% tr "AI Crop Assistant" %}</h3>
+            <a href="{% url 'clear_chat' %}" class="btn btn-sm btn-outline-secondary">{% tr "Clear Chat" %}</a>
+        </div>
+        <div class="border rounded p-3 mb-3" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+            {% if chat_history %}
+                {% for chat in chat_history %}
+                <div class="mb-3">
+                    <div class="fw-bold text-success">{% tr "You" %}:</div>
+                    <div class="ps-2">{{ chat.user }}</div>
+                    <div class="fw-bold text-primary mt-2">{% tr "Bot" %}:</div>
+                    <div class="ps-2">{{ chat.bot }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">{% tr "Ask me about crops, fertilizers, pests, or growing seasons!" %}</p>
+            {% endif %}
+        </div>
+        <form method="post" class="row g-2">
+            {% csrf_token %}
+            <div class="col-9">
+                <input type="text" name="message" class="form-control" placeholder="{% tr "Type your question..." %}" required>
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-success w-100">{% tr "Send" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

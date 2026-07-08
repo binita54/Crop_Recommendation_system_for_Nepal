@@ -1,0 +1,39 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Admin Users" %}{% endblock %}
+{% block content %}
+<div class="card panel-card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="mb-0"><i class="fa-solid fa-users"></i> {% tr "Registered Users" %}</h3>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-success btn-sm">{% tr "Back to Dashboard" %}</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>{% tr "Full Name" %}</th>
+                        <th>{% tr "Email" %}</th>
+                        <th>{% tr "Phone" %}</th>
+                        <th>{% tr "Joined" %}</th>
+                        <th>{% tr "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.get_full_name|default:user.username }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{% if user.userprofile.phone %}{{ user.userprofile.phone }}{% else %}<span class="text-muted">{% tr "Not provided" %}</span>{% endif %}</td>
+                        <td>{{ user.date_joined|date:"d M Y H:i" }}</td>
+                        <td><a href="{% url 'delete_user' user.id %}" class="btn btn-sm btn-outline-danger">{% tr "Delete" %}</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-muted">{% tr "No users found." %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

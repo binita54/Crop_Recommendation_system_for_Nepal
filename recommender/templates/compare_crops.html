@@ -1,0 +1,65 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Compare Crops" %}{% endblock %}
+{% block content %}
+<div class="card panel-card shadow-sm border-0">
+    <div class="card-body">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+            <div>
+                <h3 class="mb-1"><i class="fa-solid fa-scale-balanced"></i> {% tr "Compare Crops" %}</h3>
+                <p class="text-muted mb-0">{% tr "Pick two crops to compare their climate, season, and growing tips side-by-side." %}</p>
+            </div>
+        </div>
+        <form method="post" class="row g-3 mb-4">
+            {% csrf_token %}
+            <div class="col-md-5">
+                <select name="crop1" class="form-select">
+                    {% for crop in crops %}
+                    <option value="{{ crop }}" {% if selected.0 == crop %}selected{% endif %}>{{ crop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <select name="crop2" class="form-select">
+                    {% for crop in crops %}
+                    <option value="{{ crop }}" {% if selected.1 == crop %}selected{% endif %}>{{ crop }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-success w-100" type="submit"><i class="fa-solid fa-arrow-right-arrow-left me-2"></i> {% tr "Compare" %}</button>
+            </div>
+        </form>
+        {% if selected.0 and selected.1 %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="card border-success h-100 bg-surface">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ selected.0 }}</h5>
+                        <p class="text-muted">{{ crop1_info.description|default:"Crop information" }}</p>
+                        <div class="small text-muted">
+                            <div><strong>{% tr "Climate" %}:</strong> {{ crop1_info.climate|default:"Varies" }}</div>
+                            <div><strong>{% tr "Season" %}:</strong> {{ crop1_info.season|default:"Flexible" }}</div>
+                            <div><strong>{% tr "Tip" %}:</strong> {{ crop1_info.tip|default:"Use standard practices." }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-success h-100 bg-surface">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ selected.1 }}</h5>
+                        <p class="text-muted">{{ crop2_info.description|default:"Crop information" }}</p>
+                        <div class="small text-muted">
+                            <div><strong>{% tr "Climate" %}:</strong> {{ crop2_info.climate|default:"Varies" }}</div>
+                            <div><strong>{% tr "Season" %}:</strong> {{ crop2_info.season|default:"Flexible" }}</div>
+                            <div><strong>{% tr "Tip" %}:</strong> {{ crop2_info.tip|default:"Use standard practices." }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

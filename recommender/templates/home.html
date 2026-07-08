@@ -1,0 +1,187 @@
+﻿{% extends "base.html" %}
+{% load translation_tags %}
+{% block title %}{% tr "Home" %}{% endblock %}
+{% block content %}
+<section class="hero-section">
+    <div class="hero-card row g-4 align-items-center">
+        <div class="col-lg-7">
+            <span class="hero-badge"><i class="fa-solid fa-bolt"></i> {% tr "Smart farming launched" %}</span>
+            <h1 class="section-title">{% tr "Modern crop planning that works for every field." %}</h1>
+            <p class="section-copy">{% tr "Agro Smart combines prediction AI, disease detection, fertilizer guidance, and field tools into one polished dashboard designed for real farm decisions." %}</p>
+            <div class="hero-actions d-flex flex-wrap gap-3 mt-4">
+                {% if user.is_authenticated and user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-success btn-lg"><i class="fa-solid fa-gauge-high me-2"></i>{% tr "Admin Dashboard" %}</a>
+                <a href="{% url 'admin_predictions' %}" class="btn btn-white btn-lg"><i class="fa-solid fa-table me-2"></i>{% tr "View Reports" %}</a>
+                {% elif user.is_authenticated and not user.is_staff %}
+                <a href="{% url 'predict' %}" class="btn btn-success btn-lg"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>{% tr "Predict Crop" %}</a>
+                <a href="{% url 'user_history' %}" class="btn btn-white btn-lg"><i class="fa-solid fa-clock-rotate-left me-2"></i>{% tr "My History" %}</a>
+                {% else %}
+                <a href="{% url 'signup' %}" class="btn btn-success btn-lg"><i class="fa-solid fa-user-plus me-2"></i>{% tr "Get Started" %}</a>
+                <a href="{% url 'login' %}" class="btn btn-white btn-lg"><i class="fa-solid fa-right-to-bracket me-2"></i>{% tr "Login" %}</a>
+                {% endif %}
+            </div>
+            <div class="row g-3 mt-5">
+                <div class="col-sm-6">
+                    <div class="stat-tile">
+                        <div class="state-title">{% tr "Total users" %}</div>
+                        <div class="state-value">{{ total_users }}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="stat-tile">
+                        <div class="state-title">{% tr "Predictions" %}</div>
+                        <div class="state-value">{{ total_predictions }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="hero-panel p-4 rounded-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h6 class="mb-1">{% tr "Farm Pulse" %}</h6>
+                        <p class="small text-muted mb-0">{% tr "Your daily agriculture summary at a glance." %}</p>
+                    </div>
+                    <span class="badge bg-success text-white py-2 px-3">{% tr "Live" %}</span>
+                </div>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded-4 bg-white border">
+                            <div>
+                                <div class="text-muted small">{% tr "Weather insight" %}</div>
+                                <div class="fw-bold">Sunny • 23°C</div>
+                            </div>
+                            <i class="fa-solid fa-sun fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center p-3 rounded-4 bg-white border">
+                            <div>
+                                <div class="text-muted small">{% tr "Top recommended crop" %}</div>
+                                <div class="fw-bold">Tomato</div>
+                            </div>
+                            <span class="badge bg-success">High demand</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="p-3 rounded-4 bg-white border">
+                            <h6 class="mb-2">{% tr "Quick tip" %}</h6>
+                            <p class="small text-muted mb-0">{% tr "Use the fertilizer planner after prediction to keep soil nutrients balanced and yields strong." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4 my-5">
+    <div class="col-12">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3">
+            <div>
+                <h3 class="mb-1">{% tr "Quick tools" %}</h3>
+                <p class="text-muted mb-0">{% tr "Jump straight into the best tools for your farm." %}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'disease_detection' %}" class="text-decoration-none text-body">
+            <div class="quick-action-card card h-100 shadow-sm p-4">
+                <div class="feature-icon bg-success text-white mb-3"><i class="fa-solid fa-leaf"></i></div>
+                <h5>{% tr "Disease detection" %}</h5>
+                <p class="small text-muted">{% tr "Upload a leaf image and find plant issues quickly." %}</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'fertilizer' %}" class="text-decoration-none text-body">
+            <div class="quick-action-card card h-100 shadow-sm p-4">
+                <div class="feature-icon bg-success text-white mb-3"><i class="fa-solid fa-seedling"></i></div>
+                <h5>{% tr "Fertilizer planner" %}</h5>
+                <p class="small text-muted">{% tr "Balance N-P-K values for smarter crop nutrition." %}</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'compare_crops' %}" class="text-decoration-none text-body">
+            <div class="quick-action-card card h-100 shadow-sm p-4">
+                <div class="feature-icon bg-success text-white mb-3"><i class="fa-solid fa-scale-balanced"></i></div>
+                <h5>{% tr "Compare crops" %}</h5>
+                <p class="small text-muted">{% tr "See crop season, climate, and tip comparisons side by side." %}</p>
+            </div>
+        </a>
+    </div>
+</section>
+
+<section class="feature-grid row g-4 mb-5">
+    <div class="col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon bg-success text-white"><i class="fa-solid fa-flask"></i></div>
+            <h5>{% tr "Prediction engine" %}</h5>
+            <p>{% tr "Get crop recommendations from soil and climate inputs in seconds." %}</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon bg-success text-white"><i class="fa-solid fa-robot"></i></div>
+            <h5>{% tr "AI assistant" %}</h5>
+            <p>{% tr "Ask the crop bot for guidance on pests, seasons, and fertilizer planning." %}</p>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon bg-success text-white"><i class="fa-solid fa-map-location-dot"></i></div>
+            <h5>{% tr "Field finder" %}</h5>
+            <p>{% tr "Capture location to improve weather-based recommendations." %}</p>
+        </div>
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-8">
+        <div class="card panel-card shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+                    <div>
+                        <h3 class="mb-1">{% tr "Daily farm insights" %}</h3>
+                        <p class="text-muted mb-0">{% tr "Small actions that keep your harvest healthy." %}</p>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 bg-success-soft">
+                            <h6 class="mb-2">{% tr "Seed timing" %}</h6>
+                            <p class="small text-muted mb-0">{% tr "Choose crops that match your local season window." %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 bg-success-soft">
+                            <h6 class="mb-2">{% tr "Soil balance" %}</h6>
+                            <p class="small text-muted mb-0">{% tr "Make sure your fertilizer plan keeps nutrients in line." %}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-4 rounded-4 bg-success-soft">
+                            <h6 class="mb-2">{% tr "Disease watch" %}</h6>
+                            <p class="small text-muted mb-0">{% tr "Inspect leaves early and avoid bigger crop losses." %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card panel-card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="mb-3">{% tr "What’s new" %}</h5>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2"><strong>{% tr "Faster tool access" %}</strong> {% tr "with quick cards." %}</li>
+                    <li class="mb-2"><strong>{% tr "Polished dashboard" %}</strong> {% tr "for growers and admins." %}</li>
+                    <li class="mb-2"><strong>{% tr "Dark mode" %}</strong> {% tr "for low-light use." %}</li>
+                    <li>{% tr "Better spacing, modern typography, and smoother interactions." %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
