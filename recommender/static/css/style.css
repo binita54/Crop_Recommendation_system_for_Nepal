@@ -393,6 +393,7 @@ footer,
 }
 
 .auth-aside {
+  position: relative; 
   min-height: 100%;
   background: linear-gradient(180deg, rgba(63, 143, 74, 0.90), rgba(33, 65, 34, 0.92)),
     url('/static/images/image3.jpg') center/cover no-repeat;
@@ -410,6 +411,7 @@ footer,
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(28, 62, 34, 0.16), rgba(15, 23, 42, 0.28));
+  pointer-events: none;
 }
 
 .auth-aside h4,
