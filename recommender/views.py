@@ -398,6 +398,8 @@ def signup_view(request):
     return render(request, "signup.html") 
 
 from .ml.loader import predict_one, load_bundle, predict_with_confidence
+from .ml.disease_loader import predict_disease
+
 from django.contrib.auth.decorators import login_required ,user_passes_test
 
 @login_required 
@@ -824,29 +826,29 @@ def fertilizer_recommendation_view(request):
         )
     return render(request, 'fertilizer_recommendation.html', locals())
 
-
 @login_required
 def disease_detection_view(request):
     result = None
     if request.method == 'POST' and request.FILES.get('image'):
         image = request.FILES['image']
-        diseases = ['Healthy', 'Powdery Mildew', 'Leaf Spot', 'Rust', 'Bacterial Blight']
-        predicted = random.choice(diseases)
-        confidence = round(random.uniform(0.75, 0.98), 2)
+        image.seek(0)                          
+        prediction = predict_disease(image)
+        predicted = prediction['label']
+        confidence = prediction['confidence'] / 100  # keep as 0-1 to match your model field / old convention
         detection = DiseaseDetection.objects.create(
             user=request.user, image=image,
             predicted_label=predicted, confidence=confidence
         )
         result = {
             'label': predicted,
-            'confidence': confidence
+            'confidence': confidence,
+            'top3': prediction['top3'],
         }
         Notification.objects.create(
             user=request.user,
-            message=f"Disease detection: {predicted} detected with {confidence*100}% confidence"
+            message=f"Disease detection: {predicted} detected with {round(confidence*100,1)}% confidence"
         )
     return render(request, 'disease_detection.html', locals())
-
 
 @login_required
 def map_location_view(request):
