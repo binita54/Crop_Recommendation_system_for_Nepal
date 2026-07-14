@@ -37,4 +37,5 @@ urlpatterns = [
     path('fertilizer/', fertilizer_recommendation_view, name='fertilizer'),
     path('disease_detection/', disease_detection_view, name='disease_detection'),
     path('map_location/', map_location_view, name='map_location'),
+    path('api/weather/', weather_json_view, name='weather_json'),
 ]

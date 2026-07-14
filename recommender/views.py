@@ -5,7 +5,7 @@ import urllib.request
 import random
 import time
 from django.db import models
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render , redirect, get_object_or_404
 from .models import *
 from django.contrib import messages
@@ -461,6 +461,22 @@ def logout_view (request):
     logout(request)
     messages.success(request, "Logout sucessfully !")
     return redirect ("login")
+
+
+@login_required
+def weather_json_view(request):
+    city = request.GET.get("city", "").strip()
+    if not city:
+        return JsonResponse({"ok": False, "error": "no city"}, status=400)
+    data = get_weather_data(city)
+    if not data:
+        return JsonResponse({"ok": False, "error": "lookup failed"}, status=404)
+    return JsonResponse({
+        "ok": True,
+        "temperature": data["temperature"],
+        "humidity": data["humidity"],
+        "rainfall": data["rainfall"],
+    })
 
 
 

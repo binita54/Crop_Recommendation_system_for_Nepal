@@ -23,6 +23,24 @@ We therefore merge two sources:
 
 Result: **1860 rows, 15 Nepal crops, ~93% test accuracy.**
 
+### Algorithm comparison (why Random Forest)
+We compared 5 classifiers on the merged dataset with the same train/test
+split (`compare_algorithms.py`):
+
+| Algorithm | Test Accuracy |
+|---|---:|
+| Random Forest | 0.9328 |
+| Decision Tree | 0.9113 |
+| SVM (RBF) | 0.9409 |
+| K-Nearest Neighbors | 0.9409 |
+| Logistic Regression | 0.9113 |
+
+All five scored 91–94%, so accuracy was comparable. We chose **Random
+Forest** because it provides a **native probability output** (powers the
+confidence % and top-3 suggestions via `model.predict_proba` in `loader.py`),
+needs **no feature scaling** (unlike SVM/KNN), and as an ensemble is **more
+robust than a single Decision Tree**.
+
 ### How to retrain
 ```bash
 # from project root

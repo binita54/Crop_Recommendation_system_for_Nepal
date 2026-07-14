@@ -113,6 +113,28 @@
         });
         Swal.fire({ icon: 'info', title: '{% tr "Sample values loaded" %}' });
     });
+
+    // Live weather auto-fill: when the city box loses focus, fetch real
+    // temperature/humidity/rainfall from Open-Meteo and fill the 3 boxes.
+    const cityInput = document.querySelector('input[name="city"]');
+    if (cityInput) {
+        cityInput.addEventListener('blur', async () => {
+            const city = cityInput.value.trim();
+            if (!city) return;
+            try {
+                const res = await fetch(`/api/weather/?city=${encodeURIComponent(city)}`);
+                const d = await res.json();
+                if (!d.ok) return;
+                const fill = (name, val) => {
+                    const el = document.querySelector(`input[name="${name}"]`);
+                    if (el && !el.value) el.value = val;   // fill only if empty
+                };
+                fill('temperature', d.temperature);
+                fill('humidity', d.humidity);
+                fill('rainfall', d.rainfall);
+            } catch (e) { /* network error: ignore, user can type manually */ }
+        });
+    }
 })();
 </script>
 {% endblock %}
